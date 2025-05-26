@@ -1,0 +1,50 @@
+name: taller_url
+description: Sistema de Gestión de Talleres de Diseño Industrial - Universidad Rafael Landívar
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '^3.7.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+    
+  # Estado y navegación
+  get: ^4.6.5
+  
+  # Almacenamiento local  
+  get_storage: ^2.1.1
+  
+  # Calendario
+  table_calendar: ^3.0.9
+  
+  # Reproductor de videos
+  video_player: ^2.8.2
+  
+  # Notificaciones locales
+  flutter_local_notifications: ^16.3.2
+  
+  # Generador de IDs únicos
+  uuid: ^4.2.2
+  
+  # Iconos
+  cupertino_icons: ^1.0.6
+  
+  # Manejo de fechas
+  intl: ^0.18.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/images/tools/
+    - assets/videos/
+    - assets/videos/induction/
+    - assets/icons/
