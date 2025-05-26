@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-// Importar bindings
+// Importar bindings faltantes
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -11,7 +11,7 @@ import '../modules/induction/bindings/induction_binding.dart';
 import '../modules/notifications/bindings/notifications_binding.dart';
 import '../modules/admin/bindings/admin_binding.dart';
 
-// Importar vistas
+// Importar vistas faltantes
 import '../modules/splash/views/splash_view.dart';
 import '../modules/auth/views/login_view.dart';
 import '../modules/home/views/home_view.dart';
@@ -132,7 +132,7 @@ class AppPages {
       page: () => const AdminPanelView(),
       binding: AdminBinding(),
       transition: Transition.rightToLeft,
-      middlewares: [AdminMiddleware()], // Middleware para verificar permisos
+      middlewares: [AdminMiddleware()],
     ),
 
     GetPage(
@@ -150,6 +150,15 @@ class AppPages {
       transition: Transition.rightToLeft,
       middlewares: [AdminMiddleware()],
     ),
+
+    // Ruta para editar usuario
+    GetPage(
+      name: AppRoutes.EDIT_USER,
+      page: () => const CreateUserView(), // Reutiliza la misma vista
+      binding: AdminBinding(),
+      transition: Transition.rightToLeft,
+      middlewares: [AdminMiddleware()],
+    ),
   ];
 }
 
@@ -157,8 +166,8 @@ class AppPages {
 class AdminMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
-    // Aquí se verificaría si el usuario actual es admin
-    // Si no es admin, redirigir al home
-    return null; // Por ahora permitimos el acceso
+    // TODO: Implementar verificación de permisos admin
+    // Por ahora permitimos el acceso
+    return null;
   }
 }

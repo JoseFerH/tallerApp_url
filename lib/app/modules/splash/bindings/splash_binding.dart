@@ -5,6 +5,7 @@ import '../controllers/splash_controller.dart';
 class SplashBinding extends Bindings {
   @override
   void dependencies() {
+    // Controlador de splash
     Get.lazyPut<SplashController>(() => SplashController());
   }
 }
