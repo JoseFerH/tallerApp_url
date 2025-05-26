@@ -15,25 +15,23 @@ class SplashView extends GetView<SplashController> {
     return Scaffold(
       backgroundColor: AppColors.primaryBlue,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.primaryGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
         child: SafeArea(
           child: Column(
             children: [
               // Espaciado superior
               const Spacer(flex: 2),
-              
+
               // Logo y branding
               _buildBrandingSection(),
-              
+
               const Spacer(flex: 1),
-              
+
               // Indicador de carga y mensaje
               _buildLoadingSection(),
-              
+
               const Spacer(flex: 2),
-              
+
               // Footer con información universitaria
               _buildFooterSection(),
             ],
@@ -42,7 +40,7 @@ class SplashView extends GetView<SplashController> {
       ),
     );
   }
-  
+
   /// Sección de branding con logo y título
   Widget _buildBrandingSection() {
     return Column(
@@ -78,9 +76,9 @@ class SplashView extends GetView<SplashController> {
             ),
           ),
         ),
-        
+
         const SizedBox(height: 32),
-        
+
         // Título de la aplicación
         Text(
           Strings.appName,
@@ -90,9 +88,9 @@ class SplashView extends GetView<SplashController> {
             letterSpacing: 2.0,
           ),
         ),
-        
+
         const SizedBox(height: 8),
-        
+
         // Subtítulo
         Text(
           Strings.tagline,
@@ -104,43 +102,45 @@ class SplashView extends GetView<SplashController> {
       ],
     );
   }
-  
+
   /// Sección de carga con indicador y mensaje
   Widget _buildLoadingSection() {
-    return Obx(() => Column(
-      children: [
-        // Indicador de carga circular
-        SizedBox(
-          width: 60,
-          height: 60,
-          child: CircularProgressIndicator(
-            strokeWidth: 4,
-            valueColor: AlwaysStoppedAnimation<Color>(
-              AppColors.white.withOpacity(0.8),
+    return Obx(
+      () => Column(
+        children: [
+          // Indicador de carga circular
+          SizedBox(
+            width: 60,
+            height: 60,
+            child: CircularProgressIndicator(
+              strokeWidth: 4,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                AppColors.white.withOpacity(0.8),
+              ),
+              backgroundColor: AppColors.white.withOpacity(0.2),
             ),
-            backgroundColor: AppColors.white.withOpacity(0.2),
           ),
-        ),
-        
-        const SizedBox(height: 24),
-        
-        // Mensaje de carga
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: Text(
-            controller.loadingMessage.value,
-            key: ValueKey(controller.loadingMessage.value),
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.white.withOpacity(0.9),
-              fontWeight: FontWeight.w500,
+
+          const SizedBox(height: 24),
+
+          // Mensaje de carga
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Text(
+              controller.loadingMessage.value,
+              key: ValueKey(controller.loadingMessage.value),
+              style: AppTextStyles.bodyLarge.copyWith(
+                color: AppColors.white.withOpacity(0.9),
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
   }
-  
+
   /// Sección footer con información universitaria
   Widget _buildFooterSection() {
     return Padding(
@@ -156,9 +156,9 @@ class SplashView extends GetView<SplashController> {
             ),
             textAlign: TextAlign.center,
           ),
-          
+
           const SizedBox(height: 4),
-          
+
           // Facultad
           Text(
             Strings.facultyName,
@@ -167,9 +167,9 @@ class SplashView extends GetView<SplashController> {
             ),
             textAlign: TextAlign.center,
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Versión de la app
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

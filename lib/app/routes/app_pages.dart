@@ -33,7 +33,7 @@ import 'app_routes.dart';
 /// Configuración de páginas y rutas de la aplicación
 class AppPages {
   static const String INITIAL = AppRoutes.SPLASH;
-  
+
   static final routes = [
     // Splash y autenticación
     GetPage(
@@ -42,14 +42,14 @@ class AppPages {
       binding: SplashBinding(),
       transition: Transition.fadeIn,
     ),
-    
+
     GetPage(
       name: AppRoutes.LOGIN,
       page: () => const LoginView(),
       binding: AuthBinding(),
       transition: Transition.slideInUp,
     ),
-    
+
     // Pantalla principal
     GetPage(
       name: AppRoutes.HOME,
@@ -57,7 +57,7 @@ class AppPages {
       binding: HomeBinding(),
       transition: Transition.fadeIn,
     ),
-    
+
     // Catálogo de herramientas
     GetPage(
       name: AppRoutes.TOOLS_CATALOG,
@@ -65,14 +65,14 @@ class AppPages {
       binding: ToolsBinding(),
       transition: Transition.rightToLeft,
     ),
-    
+
     GetPage(
       name: AppRoutes.TOOL_DETAIL,
       page: () => const ToolDetailView(),
       binding: ToolsBinding(),
       transition: Transition.rightToLeft,
     ),
-    
+
     // Reservaciones
     GetPage(
       name: AppRoutes.RESERVATIONS,
@@ -80,21 +80,21 @@ class AppPages {
       binding: ReservationBinding(),
       transition: Transition.rightToLeft,
     ),
-    
+
     GetPage(
       name: AppRoutes.RESERVATION_FORM,
       page: () => const ReservationFormView(),
       binding: ReservationBinding(),
       transition: Transition.rightToLeft,
     ),
-    
+
     GetPage(
       name: AppRoutes.MY_RESERVATIONS,
       page: () => const MyReservationsView(),
       binding: ReservationBinding(),
       transition: Transition.rightToLeft,
     ),
-    
+
     // Horarios
     GetPage(
       name: AppRoutes.SCHEDULE,
@@ -102,7 +102,7 @@ class AppPages {
       binding: ScheduleBinding(),
       transition: Transition.rightToLeft,
     ),
-    
+
     // Inducción y videos
     GetPage(
       name: AppRoutes.INDUCTION,
@@ -110,14 +110,14 @@ class AppPages {
       binding: InductionBinding(),
       transition: Transition.rightToLeft,
     ),
-    
+
     GetPage(
       name: AppRoutes.VIDEO_PLAYER,
       page: () => const VideoPlayerView(),
       binding: InductionBinding(),
       transition: Transition.rightToLeft,
     ),
-    
+
     // Notificaciones
     GetPage(
       name: AppRoutes.NOTIFICATIONS,
@@ -125,7 +125,7 @@ class AppPages {
       binding: NotificationsBinding(),
       transition: Transition.rightToLeft,
     ),
-    
+
     // Panel de administración (solo admin)
     GetPage(
       name: AppRoutes.ADMIN_PANEL,
@@ -134,7 +134,7 @@ class AppPages {
       transition: Transition.rightToLeft,
       middlewares: [AdminMiddleware()], // Middleware para verificar permisos
     ),
-    
+
     GetPage(
       name: AppRoutes.USER_MANAGEMENT,
       page: () => const UserManagementView(),
@@ -142,7 +142,7 @@ class AppPages {
       transition: Transition.rightToLeft,
       middlewares: [AdminMiddleware()],
     ),
-    
+
     GetPage(
       name: AppRoutes.CREATE_USER,
       page: () => const CreateUserView(),
