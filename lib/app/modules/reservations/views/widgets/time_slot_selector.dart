@@ -15,14 +15,14 @@ class TimeSlotSelector extends GetView<ReservationController> {
       if (controller.availableSlots.isEmpty) {
         return _buildNoSlotsAvailable();
       }
-      
+
       return Column(
         children: [
           // Información de disponibilidad
           _buildAvailabilityInfo(),
-          
+
           const SizedBox(height: 16),
-          
+
           // Lista de horarios disponibles
           ListView.builder(
             shrinkWrap: true,
@@ -31,7 +31,7 @@ class TimeSlotSelector extends GetView<ReservationController> {
             itemBuilder: (context, index) {
               final slot = controller.availableSlots[index];
               final isSelected = controller.selectedTimeSlot.value == slot;
-              
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: _buildTimeSlotCard(slot, isSelected),
@@ -42,7 +42,7 @@ class TimeSlotSelector extends GetView<ReservationController> {
       );
     });
   }
-  
+
   /// Información de disponibilidad
   Widget _buildAvailabilityInfo() {
     return Container(
@@ -57,11 +57,7 @@ class TimeSlotSelector extends GetView<ReservationController> {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.info_outline,
-            color: AppColors.primaryBlue,
-            size: 20,
-          ),
+          Icon(Icons.info_outline, color: AppColors.primaryBlue, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -83,7 +79,7 @@ class TimeSlotSelector extends GetView<ReservationController> {
       ),
     );
   }
-  
+
   /// Tarjeta de horario
   Widget _buildTimeSlotCard(TimeSlot slot, bool isSelected) {
     return GestureDetector(
@@ -92,26 +88,26 @@ class TimeSlotSelector extends GetView<ReservationController> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.primaryBlue.withOpacity(0.1)
-              : AppColors.white,
+          color:
+              isSelected
+                  ? AppColors.primaryBlue.withOpacity(0.1)
+                  : AppColors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected
-                ? AppColors.primaryBlue
-                : AppColors.cardBorder,
+            color: isSelected ? AppColors.primaryBlue : AppColors.cardBorder,
             width: isSelected ? 2 : 1,
           ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppColors.primaryBlue.withOpacity(0.2),
-                    offset: const Offset(0, 4),
-                    blurRadius: 12,
-                    spreadRadius: 0,
-                  ),
-                ]
-              : null,
+          boxShadow:
+              isSelected
+                  ? [
+                    BoxShadow(
+                      color: AppColors.primaryBlue.withOpacity(0.2),
+                      offset: const Offset(0, 4),
+                      blurRadius: 12,
+                      spreadRadius: 0,
+                    ),
+                  ]
+                  : null,
         ),
         child: Row(
           children: [
@@ -120,22 +116,21 @@ class TimeSlotSelector extends GetView<ReservationController> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColors.primaryBlue
-                    : AppColors.primaryBlue.withOpacity(0.1),
+                color:
+                    isSelected
+                        ? AppColors.primaryBlue
+                        : AppColors.primaryBlue.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 Icons.access_time,
                 size: 20,
-                color: isSelected
-                    ? AppColors.white
-                    : AppColors.primaryBlue,
+                color: isSelected ? AppColors.white : AppColors.primaryBlue,
               ),
             ),
-            
+
             const SizedBox(width: 16),
-            
+
             // Información del horario
             Expanded(
               child: Column(
@@ -144,9 +139,10 @@ class TimeSlotSelector extends GetView<ReservationController> {
                   Text(
                     slot.displayName,
                     style: AppTextStyles.subtitle1.copyWith(
-                      color: isSelected
-                          ? AppColors.primaryBlue
-                          : AppColors.textPrimary,
+                      color:
+                          isSelected
+                              ? AppColors.primaryBlue
+                              : AppColors.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -160,7 +156,7 @@ class TimeSlotSelector extends GetView<ReservationController> {
                 ],
               ),
             ),
-            
+
             // Indicador de selección
             if (isSelected)
               Container(
@@ -181,10 +177,7 @@ class TimeSlotSelector extends GetView<ReservationController> {
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
-                  border: Border.all(
-                    color: AppColors.cardBorder,
-                    width: 2,
-                  ),
+                  border: Border.all(color: AppColors.cardBorder, width: 2),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -193,7 +186,7 @@ class TimeSlotSelector extends GetView<ReservationController> {
       ),
     );
   }
-  
+
   /// Estado cuando no hay horarios disponibles
   Widget _buildNoSlotsAvailable() {
     return Container(
@@ -201,18 +194,11 @@ class TimeSlotSelector extends GetView<ReservationController> {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.warning.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.warning.withOpacity(0.3), width: 1),
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.event_busy,
-            size: 48,
-            color: AppColors.warning,
-          ),
+          Icon(Icons.event_busy, size: 48, color: AppColors.warning),
           const SizedBox(height: 16),
           Text(
             'No hay horarios disponibles',
@@ -249,18 +235,17 @@ class TimeSlotSelector extends GetView<ReservationController> {
       ),
     );
   }
-  
+
   /// Obtener descripción del horario
   String _getSlotDescription(TimeSlot slot) {
     final now = DateTime.now();
     final slotStart = slot.getStartTime(controller.selectedDate.value);
     final slotEnd = slot.getEndTime(controller.selectedDate.value);
-    
+
     // Si es hoy, mostrar tiempo relativo
     if (controller.selectedDate.value.day == now.day &&
         controller.selectedDate.value.month == now.month &&
         controller.selectedDate.value.year == now.year) {
-      
       if (slotStart.isBefore(now)) {
         return 'Ya pasó';
       } else {
@@ -273,8 +258,9 @@ class TimeSlotSelector extends GetView<ReservationController> {
         }
       }
     }
-    
+
     // Para otros días, mostrar duración
     final duration = slotEnd.difference(slotStart).inHours;
     return 'Duración: $duration horas';
   }
+}

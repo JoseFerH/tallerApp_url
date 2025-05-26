@@ -10,7 +10,7 @@ class AppTheme {
       // Configuración básica
       useMaterial3: true,
       brightness: Brightness.light,
-      
+
       // Esquema de colores principal
       colorScheme: const ColorScheme.light(
         primary: AppColors.primaryBlue,
@@ -26,7 +26,7 @@ class AppTheme {
         onBackground: AppColors.textPrimary,
         onError: AppColors.white,
       ),
-      
+
       // Configuración de la AppBar
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.primaryBlue,
@@ -37,7 +37,7 @@ class AppTheme {
         titleTextStyle: AppTextStyles.h5,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-      
+
       // Configuración de botones elevados
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -45,26 +45,22 @@ class AppTheme {
           foregroundColor: AppColors.white,
           textStyle: AppTextStyles.buttonMedium,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           elevation: 2,
         ),
       ),
-      
+
       // Configuración de botones con contorno
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primaryBlue,
           textStyle: AppTextStyles.buttonMedium,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           side: const BorderSide(color: AppColors.primaryBlue, width: 1),
         ),
       ),
-      
+
       // Configuración de botones de texto
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -73,12 +69,15 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
       ),
-      
+
       // Configuración de campos de texto
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.backgroundPrimary,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: AppColors.cardBorder),
@@ -103,9 +102,9 @@ class AppTheme {
         hintStyle: AppTextStyles.labelMedium,
         errorStyle: AppTextStyles.error,
       ),
-      
+
       // Configuración de tarjetas
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.cardBackground,
         elevation: 2,
         shadowColor: AppColors.cardShadow,
@@ -115,13 +114,10 @@ class AppTheme {
         ),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
-      
+
       // Configuración de iconos
-      iconTheme: const IconThemeData(
-        color: AppColors.textSecondary,
-        size: 24,
-      ),
-      
+      iconTheme: const IconThemeData(color: AppColors.textSecondary, size: 24),
+
       // Configuración de la barra de navegación inferior
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.backgroundPrimary,
@@ -130,42 +126,38 @@ class AppTheme {
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
-      
+
       // Configuración de chips
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.mediumGray,
         labelStyle: AppTextStyles.labelMedium,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
-      
+
       // Configuración de dividers
       dividerTheme: const DividerThemeData(
         color: AppColors.cardBorder,
         thickness: 1,
         space: 1,
       ),
-      
+
       // Configuración de floating action button
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppColors.primaryBlue,
         foregroundColor: AppColors.white,
         elevation: 4,
       ),
-      
+
       // Configuración de diálogos
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.backgroundPrimary,
         elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         titleTextStyle: AppTextStyles.h5,
         contentTextStyle: AppTextStyles.bodyMedium,
       ),
-      
+
       // Configuración de snackbars
       snackBarTheme: const SnackBarThemeData(
         backgroundColor: AppColors.darkGray,
@@ -175,7 +167,7 @@ class AppTheme {
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
       ),
-      
+
       // Configuración de tooltips
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
@@ -187,7 +179,7 @@ class AppTheme {
       ),
     );
   }
-  
+
   // Método para obtener sombras personalizadas
   static List<BoxShadow> get cardShadow => [
     const BoxShadow(
@@ -197,7 +189,7 @@ class AppTheme {
       spreadRadius: 0,
     ),
   ];
-  
+
   // Método para obtener sombras elevadas
   static List<BoxShadow> get elevatedShadow => [
     const BoxShadow(

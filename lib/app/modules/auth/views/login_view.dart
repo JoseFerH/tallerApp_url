@@ -22,27 +22,27 @@ class LoginView extends GetView<AuthController> {
           child: Column(
             children: [
               const SizedBox(height: 40),
-              
+
               // Logo y branding de la universidad
               const URLLogo(),
-              
+
               const SizedBox(height: 40),
-              
+
               // Título de bienvenida
               _buildWelcomeSection(),
-              
+
               const SizedBox(height: 32),
-              
+
               // Formulario de login
               const LoginForm(),
-              
+
               const SizedBox(height: 24),
-              
+
               // Información adicional
               _buildInfoSection(),
-              
+
               const SizedBox(height: 40),
-              
+
               // Footer con información de la app
               _buildFooter(),
             ],
@@ -51,7 +51,7 @@ class LoginView extends GetView<AuthController> {
       ),
     );
   }
-  
+
   /// Sección de bienvenida
   Widget _buildWelcomeSection() {
     return Column(
@@ -64,9 +64,9 @@ class LoginView extends GetView<AuthController> {
           ),
           textAlign: TextAlign.center,
         ),
-        
+
         const SizedBox(height: 8),
-        
+
         Text(
           Strings.welcomeSubtitle,
           style: AppTextStyles.bodyMedium.copyWith(
@@ -77,7 +77,7 @@ class LoginView extends GetView<AuthController> {
       ],
     );
   }
-  
+
   /// Sección de información
   Widget _buildInfoSection() {
     return Container(
@@ -94,11 +94,7 @@ class LoginView extends GetView<AuthController> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.info_outline,
-                color: AppColors.primaryBlue,
-                size: 20,
-              ),
+              Icon(Icons.info_outline, color: AppColors.primaryBlue, size: 20),
               const SizedBox(width: 8),
               Text(
                 'Información de Acceso',
@@ -109,25 +105,25 @@ class LoginView extends GetView<AuthController> {
               ),
             ],
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           _buildInfoItem(
             'Nombre Completo',
             'Usa tu nombre completo como aparece en el registro universitario',
           ),
-          
+
           const SizedBox(height: 8),
-          
+
           _buildInfoItem(
             'Carné Universitario',
             'Ingresa tu carné de 7 dígitos como contraseña',
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           // Botones de acceso rápido para testing
-          if (Get.isLogModeActive) ...[
+          if (Get.isLogEnable) ...[
             const Divider(),
             const SizedBox(height: 8),
             _buildQuickAccessButtons(),
@@ -136,7 +132,7 @@ class LoginView extends GetView<AuthController> {
       ),
     );
   }
-  
+
   /// Item de información
   Widget _buildInfoItem(String title, String description) {
     return Row(
@@ -175,7 +171,7 @@ class LoginView extends GetView<AuthController> {
       ],
     );
   }
-  
+
   /// Botones de acceso rápido (solo para testing)
   Widget _buildQuickAccessButtons() {
     return Column(
@@ -192,40 +188,34 @@ class LoginView extends GetView<AuthController> {
           children: [
             Expanded(
               child: OutlinedButton(
-                onPressed: () => controller.autoLoginForTesting(userType: 'admin'),
+                onPressed:
+                    () => controller.autoLoginForTesting(userType: 'admin'),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
-                child: Text(
-                  'Admin',
-                  style: AppTextStyles.labelSmall,
-                ),
+                child: Text('Admin', style: AppTextStyles.labelSmall),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: OutlinedButton(
-                onPressed: () => controller.autoLoginForTesting(userType: 'student1'),
+                onPressed:
+                    () => controller.autoLoginForTesting(userType: 'student1'),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
-                child: Text(
-                  'Emily',
-                  style: AppTextStyles.labelSmall,
-                ),
+                child: Text('Emily', style: AppTextStyles.labelSmall),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: OutlinedButton(
-                onPressed: () => controller.autoLoginForTesting(userType: 'student2'),
+                onPressed:
+                    () => controller.autoLoginForTesting(userType: 'student2'),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
-                child: Text(
-                  'Eileen',
-                  style: AppTextStyles.labelSmall,
-                ),
+                child: Text('Eileen', style: AppTextStyles.labelSmall),
               ),
             ),
           ],
@@ -233,27 +223,22 @@ class LoginView extends GetView<AuthController> {
       ],
     );
   }
-  
+
   /// Footer con información de la app
   Widget _buildFooter() {
     return Column(
       children: [
-        Divider(
-          color: AppColors.cardBorder,
-          thickness: 1,
-        ),
-        
+        Divider(color: AppColors.cardBorder, thickness: 1),
+
         const SizedBox(height: 16),
-        
+
         Text(
           'Desarrollado para',
-          style: AppTextStyles.caption.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
         ),
-        
+
         const SizedBox(height: 4),
-        
+
         Text(
           Strings.universityName,
           style: AppTextStyles.labelMedium.copyWith(
@@ -262,17 +247,15 @@ class LoginView extends GetView<AuthController> {
           ),
           textAlign: TextAlign.center,
         ),
-        
+
         Text(
           Strings.facultyName,
-          style: AppTextStyles.caption.copyWith(
-            color: AppColors.textSecondary,
-          ),
+          style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
           textAlign: TextAlign.center,
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(

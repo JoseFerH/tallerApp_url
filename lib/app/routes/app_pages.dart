@@ -27,6 +27,7 @@ import '../modules/notifications/views/notifications_view.dart';
 import '../modules/admin/views/admin_panel_view.dart';
 import '../modules/admin/views/user_management_view.dart';
 import '../modules/admin/views/create_user_view.dart';
+import 'package:flutter/material.dart';
 
 import 'app_routes.dart';
 

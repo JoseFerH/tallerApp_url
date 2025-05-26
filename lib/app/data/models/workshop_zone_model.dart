@@ -1,5 +1,5 @@
 import 'dart:convert';
-import '../utils/constants.dart';
+import '../../core/utils/constants.dart';
 
 /// Modelo extendido para las zonas del taller con información adicional
 class WorkshopZoneModel {
