@@ -1,3 +1,4 @@
+// lib/app/modules/home/views/home_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/theme/app_colors.dart';
@@ -8,7 +9,6 @@ import 'widgets/welcome_header.dart';
 import 'widgets/menu_card.dart';
 import 'widgets/admin_menu_card.dart';
 
-/// Vista principal de la aplicación
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
 
@@ -26,17 +26,10 @@ class HomeView extends GetView<HomeController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header de bienvenida
               const WelcomeHeader(),
-
               const SizedBox(height: 24),
-
-              // Mensaje de estado del usuario
               _buildStatusMessage(),
-
               const SizedBox(height: 24),
-
-              // Título de acciones rápidas
               Text(
                 Strings.quickActions,
                 style: AppTextStyles.h5.copyWith(
@@ -44,15 +37,9 @@ class HomeView extends GetView<HomeController> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 16),
-
-              // Grid de acciones rápidas
               _buildQuickActionsGrid(),
-
               const SizedBox(height: 24),
-
-              // Próximas reservaciones (si las hay)
               Obx(() {
                 if (controller.upcomingReservations.isNotEmpty) {
                   return Column(
@@ -73,8 +60,6 @@ class HomeView extends GetView<HomeController> {
                 }
                 return const SizedBox.shrink();
               }),
-
-              // Panel de admin (solo para administradores)
               Obx(() {
                 if (controller.isCurrentUserAdmin) {
                   return Column(
@@ -95,8 +80,6 @@ class HomeView extends GetView<HomeController> {
                 }
                 return const SizedBox.shrink();
               }),
-
-              // Estadísticas rápidas (para staff)
               Obx(() {
                 if (controller.isCurrentUserStaff &&
                     controller.quickStats.isNotEmpty) {
@@ -113,7 +96,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  /// AppBar personalizada - CORREGIDO
+  // ✅ CORREGIDO: AppBar sin uso innecesario de Obx
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       title: Text(
@@ -124,19 +107,15 @@ class HomeView extends GetView<HomeController> {
         ),
       ),
       actions: [
-        // Botón de notificaciones
         IconButton(
           icon: const Icon(Icons.notifications_outlined),
           onPressed: controller.navigateToNotifications,
         ),
-
-        // Botón de perfil/menú - CORREGIDO: Usar Obx solo para las partes reactivas
         PopupMenuButton<String>(
           icon: Obx(
             () => CircleAvatar(
               backgroundColor: AppColors.white,
               child: Text(
-                // CORREGIDO: Ahora currentUser es observable
                 controller.currentUser.value?.fullName.isNotEmpty == true
                     ? controller.currentUser.value!.fullName[0].toUpperCase()
                     : 'U',
@@ -150,10 +129,8 @@ class HomeView extends GetView<HomeController> {
           onSelected: (value) {
             switch (value) {
               case 'profile':
-                // Navegar al perfil (futuro)
                 break;
               case 'settings':
-                // Navegar a configuración (futuro)
                 break;
               case 'logout':
                 controller.showLogoutDialog();
@@ -199,20 +176,18 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  /// Drawer lateral - CORREGIDO
+  // ✅ CORREGIDO: Drawer con Obx solo donde es necesario
   Widget _buildDrawer() {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          // Header del drawer - CORREGIDO: Separar lo observable de lo no observable
           Obx(
             () => UserAccountsDrawerHeader(
               decoration: const BoxDecoration(
                 gradient: AppColors.primaryGradient,
               ),
               accountName: Text(
-                // CORREGIDO: Usar currentUser.value que es observable
                 controller.currentUser.value?.fullName ?? 'Usuario',
                 style: AppTextStyles.subtitle1.copyWith(
                   color: AppColors.white,
@@ -239,14 +214,11 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
           ),
-
-          // Opciones del menú - NO necesitan Obx porque no son reactivas
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Inicio'),
             onTap: () => Get.back(),
           ),
-
           ListTile(
             leading: const Icon(Icons.build),
             title: const Text('Herramientas'),
@@ -255,7 +227,6 @@ class HomeView extends GetView<HomeController> {
               controller.navigateToTools();
             },
           ),
-
           ListTile(
             leading: const Icon(Icons.event_available),
             title: const Text('Reservar'),
@@ -264,7 +235,6 @@ class HomeView extends GetView<HomeController> {
               controller.navigateToReservations();
             },
           ),
-
           ListTile(
             leading: const Icon(Icons.event_note),
             title: const Text('Mis Reservaciones'),
@@ -273,7 +243,6 @@ class HomeView extends GetView<HomeController> {
               controller.navigateToMyReservations();
             },
           ),
-
           ListTile(
             leading: const Icon(Icons.access_time),
             title: const Text('Horarios'),
@@ -282,7 +251,6 @@ class HomeView extends GetView<HomeController> {
               controller.navigateToSchedule();
             },
           ),
-
           ListTile(
             leading: const Icon(Icons.play_circle),
             title: const Text('Inducción'),
@@ -291,10 +259,7 @@ class HomeView extends GetView<HomeController> {
               controller.navigateToInduction();
             },
           ),
-
           const Divider(),
-
-          // Admin option (solo para administradores) - CORREGIDO
           Obx(() {
             if (controller.currentUser.value?.isAdmin == true) {
               return ListTile(
@@ -308,7 +273,6 @@ class HomeView extends GetView<HomeController> {
             }
             return const SizedBox.shrink();
           }),
-
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text(
@@ -325,7 +289,6 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  /// Mensaje de estado del usuario
   Widget _buildStatusMessage() {
     return Obx(
       () => Container(
@@ -373,7 +336,6 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  /// Grid de acciones rápidas
   Widget _buildQuickActionsGrid() {
     return Obx(() {
       final actions = controller.getQuickActions();
@@ -403,7 +365,6 @@ class HomeView extends GetView<HomeController> {
     });
   }
 
-  /// Próximas reservaciones
   Widget _buildUpcomingReservations() {
     return Obx(
       () => ListView.builder(
@@ -443,7 +404,6 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  /// Estadísticas rápidas
   Widget _buildQuickStats() {
     return Obx(() {
       final stats = controller.quickStats;
@@ -491,7 +451,6 @@ class HomeView extends GetView<HomeController> {
     });
   }
 
-  /// Item de estadística
   Widget _buildStatItem(
     String label,
     String value,

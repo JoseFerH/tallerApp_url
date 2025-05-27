@@ -1,3 +1,4 @@
+// lib/app/modules/home/views/widgets/welcome_header.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -5,7 +6,6 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/values/strings.dart';
 import '../../controllers/home_controller.dart';
 
-/// Widget del header de bienvenida en la pantalla principal
 class WelcomeHeader extends GetView<HomeController> {
   const WelcomeHeader({super.key});
 
@@ -28,30 +28,23 @@ class WelcomeHeader extends GetView<HomeController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Saludo personalizado
           _buildGreeting(),
-
           const SizedBox(height: 8),
-
-          // Información del usuario
           _buildUserInfo(),
-
           const SizedBox(height: 16),
-
-          // Estadísticas del usuario
           _buildUserStats(),
         ],
       ),
     );
   }
 
-  /// Saludo personalizado según la hora - CORREGIDO
+  // ✅ CORREGIDO: Solo usar Obx para lo que cambia
   Widget _buildGreeting() {
     return Obx(() {
       final greeting = _getTimeOfDayGreeting();
-      // CORREGIDO: Usar currentUser.value que es observable
       final firstName =
           controller.currentUser.value?.fullName.split(' ').first ?? 'Usuario';
+
       return Text(
         '$greeting, $firstName',
         style: AppTextStyles.h4.copyWith(
@@ -62,7 +55,6 @@ class WelcomeHeader extends GetView<HomeController> {
     });
   }
 
-  /// Información del usuario - CORREGIDO
   Widget _buildUserInfo() {
     return Obx(
       () => Row(
@@ -74,15 +66,12 @@ class WelcomeHeader extends GetView<HomeController> {
           ),
           const SizedBox(width: 8),
           Text(
-            // CORREGIDO: Usar currentUser.value que es observable
             controller.currentUser.value?.roleDescription ?? 'Sin rol',
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.white.withOpacity(0.9),
             ),
           ),
           const Spacer(),
-
-          // Badge de estado de inducción
           if (!controller.hasCompletedInduction)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -125,30 +114,22 @@ class WelcomeHeader extends GetView<HomeController> {
     );
   }
 
-  /// Estadísticas del usuario
   Widget _buildUserStats() {
     return Obx(
       () => Row(
         children: [
-          // Total de reservaciones
           _buildStatChip(
             icon: Icons.event_note,
             label: 'Total',
             value: '${controller.userTotalReservations}',
           ),
-
           const SizedBox(width: 12),
-
-          // Reservaciones activas
           _buildStatChip(
             icon: Icons.event_available,
             label: 'Activas',
             value: '${controller.userActiveReservations}',
           ),
-
           const Spacer(),
-
-          // Botón de refrescar
           IconButton(
             onPressed: controller.refreshDashboard,
             icon: Obx(
@@ -168,7 +149,6 @@ class WelcomeHeader extends GetView<HomeController> {
     );
   }
 
-  /// Chip de estadística
   Widget _buildStatChip({
     required IconData icon,
     required String label,
@@ -204,7 +184,6 @@ class WelcomeHeader extends GetView<HomeController> {
     );
   }
 
-  /// Obtener saludo según la hora del día
   String _getTimeOfDayGreeting() {
     final hour = DateTime.now().hour;
 
@@ -217,7 +196,6 @@ class WelcomeHeader extends GetView<HomeController> {
     }
   }
 
-  /// Obtener ícono según el rol del usuario - CORREGIDO
   IconData _getRoleIcon() {
     final user = controller.currentUser.value;
     if (user?.isAdmin == true) {
