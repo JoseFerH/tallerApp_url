@@ -5,7 +5,7 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/values/strings.dart';
 import '../../controllers/auth_controller.dart';
 
-/// Widget del formulario de login
+/// Widget del formulario de login - CORREGIDO
 class LoginForm extends GetView<AuthController> {
   const LoginForm({super.key});
 
@@ -32,29 +32,29 @@ class LoginForm extends GetView<AuthController> {
           children: [
             // Título del formulario
             _buildFormTitle(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Campo de nombre completo
             _buildFullNameField(),
-            
+
             const SizedBox(height: 16),
-            
+
             // Campo de contraseña (carné)
             _buildPasswordField(),
-            
+
             const SizedBox(height: 8),
-            
+
             // Mensaje de error
             _buildErrorMessage(),
-            
+
             const SizedBox(height: 16),
-            
+
             // Checkbox recordar credenciales
             _buildRememberCredentials(),
-            
+
             const SizedBox(height: 24),
-            
+
             // Botón de login
             _buildLoginButton(),
           ],
@@ -62,7 +62,7 @@ class LoginForm extends GetView<AuthController> {
       ),
     );
   }
-  
+
   /// Título del formulario
   Widget _buildFormTitle() {
     return Column(
@@ -86,8 +86,8 @@ class LoginForm extends GetView<AuthController> {
       ],
     );
   }
-  
-  /// Campo de nombre completo
+
+  /// Campo de nombre completo - CORREGIDO
   Widget _buildFullNameField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,15 +108,20 @@ class LoginForm extends GetView<AuthController> {
           decoration: InputDecoration(
             hintText: Strings.usernameHint,
             prefixIcon: const Icon(Icons.person_outline),
-            suffixIcon: Obx(() => controller.fullNameController.text.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      controller.fullNameController.clear();
-                      controller.clearError();
-                    },
-                  )
-                : const SizedBox.shrink(),
+            // ✅ CORREGIDO: Usar ValueListenableBuilder en lugar de Obx
+            suffixIcon: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: controller.fullNameController,
+              builder: (context, value, child) {
+                return value.text.isNotEmpty
+                    ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        controller.fullNameController.clear();
+                        controller.clearError();
+                      },
+                    )
+                    : const SizedBox.shrink();
+              },
             ),
           ),
           validator: controller.validateFullName,
@@ -125,8 +130,8 @@ class LoginForm extends GetView<AuthController> {
       ],
     );
   }
-  
-  /// Campo de contraseña (carné)
+
+  /// Campo de contraseña (carné) - CORREGIDO
   Widget _buildPasswordField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,55 +144,52 @@ class LoginForm extends GetView<AuthController> {
           ),
         ),
         const SizedBox(height: 8),
-        Obx(() => TextFormField(
-          controller: controller.passwordController,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.done,
-          obscureText: !controller.isPasswordVisible.value,
-          decoration: InputDecoration(
-            hintText: Strings.passwordHint,
-            prefixIcon: const Icon(Icons.badge_outlined),
-            suffixIcon: IconButton(
-              icon: Icon(
-                controller.isPasswordVisible.value
-                    ? Icons.visibility_off
-                    : Icons.visibility,
+        // ✅ CORREGIDO: Usar Obx solo para la variable reactiva específica
+        Obx(
+          () => TextFormField(
+            controller: controller.passwordController,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
+            obscureText: !controller.isPasswordVisible.value,
+            decoration: InputDecoration(
+              hintText: Strings.passwordHint,
+              prefixIcon: const Icon(Icons.badge_outlined),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  controller.isPasswordVisible.value
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                ),
+                onPressed: controller.togglePasswordVisibility,
               ),
-              onPressed: controller.togglePasswordVisibility,
             ),
+            validator: controller.validatePassword,
+            onChanged: (_) => controller.clearError(),
+            onFieldSubmitted: (_) => controller.login(),
           ),
-          validator: controller.validatePassword,
-          onChanged: (_) => controller.clearError(),
-          onFieldSubmitted: (_) => controller.login(),
-        )),
+        ),
       ],
     );
   }
-  
-  /// Mensaje de error
+
+  /// Mensaje de error - CORREGIDO
   Widget _buildErrorMessage() {
+    // ✅ CORREGIDO: Un solo Obx que observa solo la variable necesaria
     return Obx(() {
       if (controller.errorMessage.value.isEmpty) {
         return const SizedBox.shrink();
       }
-      
+
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: AppColors.error.withOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: AppColors.error.withOpacity(0.3),
-            width: 1,
-          ),
+          border: Border.all(color: AppColors.error.withOpacity(0.3), width: 1),
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.error_outline,
-              color: AppColors.error,
-              size: 20,
-            ),
+            Icon(Icons.error_outline, color: AppColors.error, size: 20),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -202,68 +204,75 @@ class LoginForm extends GetView<AuthController> {
       );
     });
   }
-  
-  /// Checkbox para recordar credenciales
+
+  /// Checkbox para recordar credenciales - CORREGIDO
   Widget _buildRememberCredentials() {
-    return Obx(() => Row(
-      children: [
-        Checkbox(
-          value: controller.rememberCredentials.value,
-          onChanged: (_) => controller.toggleRememberCredentials(),
-          activeColor: AppColors.primaryBlue,
-        ),
-        Expanded(
-          child: GestureDetector(
-            onTap: controller.toggleRememberCredentials,
-            child: Text(
-              'Recordar mis credenciales',
-              style: AppTextStyles.labelMedium.copyWith(
-                color: AppColors.textSecondary,
+    // ✅ CORREGIDO: Un solo Obx observando una variable específica
+    return Obx(
+      () => Row(
+        children: [
+          Checkbox(
+            value: controller.rememberCredentials.value,
+            onChanged: (_) => controller.toggleRememberCredentials(),
+            activeColor: AppColors.primaryBlue,
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: controller.toggleRememberCredentials,
+              child: Text(
+                'Recordar mis credenciales',
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    ));
-  }
-  
-  /// Botón de login
-  Widget _buildLoginButton() {
-    return Obx(() => SizedBox(
-      height: 50,
-      child: ElevatedButton(
-        onPressed: controller.isLoading.value ? null : controller.login,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryBlue,
-          foregroundColor: AppColors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 2,
-        ),
-        child: controller.isLoading.value
-            ? SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.white,
-                  ),
-                ),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.login),
-                  const SizedBox(width: 8),
-                  Text(
-                    Strings.loginButton,
-                    style: AppTextStyles.buttonLarge,
-                  ),
-                ],
-              ),
+        ],
       ),
-    ));
+    );
+  }
+
+  /// Botón de login - CORREGIDO
+  Widget _buildLoginButton() {
+    // ✅ CORREGIDO: Un solo Obx observando solo isLoading
+    return Obx(
+      () => SizedBox(
+        height: 50,
+        child: ElevatedButton(
+          onPressed: controller.isLoading.value ? null : controller.login,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryBlue,
+            foregroundColor: AppColors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 2,
+          ),
+          child:
+              controller.isLoading.value
+                  ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.white,
+                      ),
+                    ),
+                  )
+                  : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.login),
+                      const SizedBox(width: 8),
+                      Text(
+                        Strings.loginButton,
+                        style: AppTextStyles.buttonLarge,
+                      ),
+                    ],
+                  ),
+        ),
+      ),
+    );
   }
 }

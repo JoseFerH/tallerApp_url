@@ -30,27 +30,30 @@ class WelcomeHeader extends GetView<HomeController> {
         children: [
           // Saludo personalizado
           _buildGreeting(),
-          
+
           const SizedBox(height: 8),
-          
+
           // Información del usuario
           _buildUserInfo(),
-          
+
           const SizedBox(height: 16),
-          
+
           // Estadísticas del usuario
           _buildUserStats(),
         ],
       ),
     );
   }
-  
-  /// Saludo personalizado según la hora
+
+  /// Saludo personalizado según la hora - CORREGIDO
   Widget _buildGreeting() {
     return Obx(() {
       final greeting = _getTimeOfDayGreeting();
+      // CORREGIDO: Usar currentUser.value que es observable
+      final firstName =
+          controller.currentUser.value?.fullName.split(' ').first ?? 'Usuario';
       return Text(
-        '$greeting, ${controller.currentUserName.split(' ').first}',
+        '$greeting, $firstName',
         style: AppTextStyles.h4.copyWith(
           color: AppColors.white,
           fontWeight: FontWeight.bold,
@@ -58,110 +61,113 @@ class WelcomeHeader extends GetView<HomeController> {
       );
     });
   }
-  
-  /// Información del usuario
+
+  /// Información del usuario - CORREGIDO
   Widget _buildUserInfo() {
-    return Obx(() => Row(
-      children: [
-        Icon(
-          _getRoleIcon(),
-          color: AppColors.white.withOpacity(0.9),
-          size: 18,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          controller.currentUserRole,
-          style: AppTextStyles.bodyMedium.copyWith(
+    return Obx(
+      () => Row(
+        children: [
+          Icon(
+            _getRoleIcon(),
             color: AppColors.white.withOpacity(0.9),
+            size: 18,
           ),
-        ),
-        const Spacer(),
-        
-        // Badge de estado de inducción
-        if (!controller.hasCompletedInduction)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.warning.withOpacity(0.9),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              'Inducción Pendiente',
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          )
-        else
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.success.withOpacity(0.9),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  size: 12,
-                  color: AppColors.white,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  'Verificado',
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-      ],
-    ));
-  }
-  
-  /// Estadísticas del usuario
-  Widget _buildUserStats() {
-    return Obx(() => Row(
-      children: [
-        // Total de reservaciones
-        _buildStatChip(
-          icon: Icons.event_note,
-          label: 'Total',
-          value: '${controller.userTotalReservations}',
-        ),
-        
-        const SizedBox(width: 12),
-        
-        // Reservaciones activas
-        _buildStatChip(
-          icon: Icons.event_available,
-          label: 'Activas',
-          value: '${controller.userActiveReservations}',
-        ),
-        
-        const Spacer(),
-        
-        // Botón de refrescar
-        IconButton(
-          onPressed: controller.refreshDashboard,
-          icon: Obx(() => AnimatedRotation(
-            turns: controller.isLoading.value ? 1.0 : 0.0,
-            duration: const Duration(seconds: 1),
-            child: Icon(
-              Icons.refresh,
+          const SizedBox(width: 8),
+          Text(
+            // CORREGIDO: Usar currentUser.value que es observable
+            controller.currentUser.value?.roleDescription ?? 'Sin rol',
+            style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.white.withOpacity(0.9),
             ),
-          )),
-          tooltip: 'Actualizar datos',
-        ),
-      ],
-    ));
+          ),
+          const Spacer(),
+
+          // Badge de estado de inducción
+          if (!controller.hasCompletedInduction)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.warning.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                'Inducción Pendiente',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            )
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.success.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.check_circle, size: 12, color: AppColors.white),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Verificado',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
   }
-  
+
+  /// Estadísticas del usuario
+  Widget _buildUserStats() {
+    return Obx(
+      () => Row(
+        children: [
+          // Total de reservaciones
+          _buildStatChip(
+            icon: Icons.event_note,
+            label: 'Total',
+            value: '${controller.userTotalReservations}',
+          ),
+
+          const SizedBox(width: 12),
+
+          // Reservaciones activas
+          _buildStatChip(
+            icon: Icons.event_available,
+            label: 'Activas',
+            value: '${controller.userActiveReservations}',
+          ),
+
+          const Spacer(),
+
+          // Botón de refrescar
+          IconButton(
+            onPressed: controller.refreshDashboard,
+            icon: Obx(
+              () => AnimatedRotation(
+                turns: controller.isLoading.value ? 1.0 : 0.0,
+                duration: const Duration(seconds: 1),
+                child: Icon(
+                  Icons.refresh,
+                  color: AppColors.white.withOpacity(0.9),
+                ),
+              ),
+            ),
+            tooltip: 'Actualizar datos',
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Chip de estadística
   Widget _buildStatChip({
     required IconData icon,
@@ -177,11 +183,7 @@ class WelcomeHeader extends GetView<HomeController> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 16,
-            color: AppColors.white,
-          ),
+          Icon(icon, size: 16, color: AppColors.white),
           const SizedBox(width: 6),
           Text(
             value,
@@ -201,11 +203,11 @@ class WelcomeHeader extends GetView<HomeController> {
       ),
     );
   }
-  
+
   /// Obtener saludo según la hora del día
   String _getTimeOfDayGreeting() {
     final hour = DateTime.now().hour;
-    
+
     if (hour < 12) {
       return 'Buenos días';
     } else if (hour < 18) {
@@ -214,12 +216,13 @@ class WelcomeHeader extends GetView<HomeController> {
       return 'Buenas noches';
     }
   }
-  
-  /// Obtener ícono según el rol del usuario
+
+  /// Obtener ícono según el rol del usuario - CORREGIDO
   IconData _getRoleIcon() {
-    if (controller.isCurrentUserAdmin) {
+    final user = controller.currentUser.value;
+    if (user?.isAdmin == true) {
       return Icons.admin_panel_settings;
-    } else if (controller.isCurrentUserStaff) {
+    } else if (user?.isStaff == true) {
       return Icons.work;
     } else {
       return Icons.school;

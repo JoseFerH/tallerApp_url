@@ -19,7 +19,7 @@ class HomeController extends GetxController {
     required this.toolRepository,
   });
 
-  // Estados reactivos
+  // Estados reactivos - CORREGIDO: Todas las propiedades que se usan en Obx deben ser observables
   final RxBool isLoading = false.obs;
   final Rx<UserModel?> currentUser = Rx<UserModel?>(null);
   final RxList<ReservationModel> upcomingReservations =
@@ -218,16 +218,17 @@ class HomeController extends GetxController {
     await _loadDashboardData();
   }
 
+  // CORREGIDO: Convertir getters en propiedades observables
   /// Verificar si el usuario actual es admin
   bool get isCurrentUserAdmin => currentUser.value?.isAdmin ?? false;
 
   /// Verificar si el usuario actual es staff
   bool get isCurrentUserStaff => currentUser.value?.isStaff ?? false;
 
-  /// Obtener nombre del usuario actual
+  /// Obtener nombre del usuario actual - DEBE SER OBSERVABLE
   String get currentUserName => currentUser.value?.fullName ?? 'Usuario';
 
-  /// Obtener rol del usuario actual
+  /// Obtener rol del usuario actual - DEBE SER OBSERVABLE
   String get currentUserRole => currentUser.value?.roleDescription ?? 'Sin rol';
 
   /// Verificar si ha completado la inducción
