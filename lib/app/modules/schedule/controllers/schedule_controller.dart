@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 /// Controlador para el módulo de horarios
 class ScheduleController extends GetxController {
   // Estados reactivos
-  final RxBool isLoading = false.obs;
+  final RxBool isLoading = false.obs; // ✅ Correcto
   final RxList<Map<String, dynamic>> scheduleData =
-      <Map<String, dynamic>>[].obs;
+      <Map<String, dynamic>>[].obs; // ✅ Correcto
   final RxList<Map<String, dynamic>> specialSchedules =
       <Map<String, dynamic>>[].obs;
 

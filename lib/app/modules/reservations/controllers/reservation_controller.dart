@@ -46,9 +46,12 @@ class ReservationController extends GetxController {
   // Usuario actual
   UserModel? currentUser;
 
-  get currentUserReservations => null;
+  List<ReservationModel> get currentUserReservations {
+    if (currentUser == null) return [];
+    return userReservations.where((r) => r.userId == currentUser!.id).toList();
+  }
 
-  get selectedStatusFilter => null;
+  final RxString selectedStatusFilter = 'all'.obs;
 
   @override
   void onInit() {
@@ -435,5 +438,8 @@ class ReservationController extends GetxController {
     return null;
   }
 
-  void filterByStatus(String status) {}
+  // También agregar esta implementación faltante:
+  void filterByStatus(String status) {
+    selectedStatusFilter.value = status;
+  }
 }

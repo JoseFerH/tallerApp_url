@@ -5,10 +5,9 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/values/strings.dart';
 import '../controllers/home_controller.dart';
-import 'widgets/welcome_header.dart';
 import 'widgets/menu_card.dart';
-import 'widgets/admin_menu_card.dart';
 
+/// Vista principal simplificada de la aplicación
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
 
@@ -18,85 +17,56 @@ class HomeView extends GetView<HomeController> {
       backgroundColor: AppColors.backgroundSecondary,
       appBar: _buildAppBar(),
       drawer: _buildDrawer(),
-      body: RefreshIndicator(
-        onRefresh: controller.refreshDashboard,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const WelcomeHeader(),
-              const SizedBox(height: 24),
-              _buildStatusMessage(),
-              const SizedBox(height: 24),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header de bienvenida simplificado
+            _buildWelcomeHeader(),
+
+            const SizedBox(height: 24),
+
+            // Mensaje de estado simplificado
+            _buildStatusMessage(),
+
+            const SizedBox(height: 24),
+
+            // Título de acciones rápidas
+            Text(
+              Strings.quickActions,
+              style: AppTextStyles.h5.copyWith(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Grid de acciones rápidas - SIN OBX
+            _buildQuickActionsGrid(),
+
+            const SizedBox(height: 24),
+
+            // Panel de admin (solo para administradores) - SIN OBX
+            if (controller.isCurrentUserAdmin) ...[
               Text(
-                Strings.quickActions,
-                style: AppTextStyles.h5.copyWith(
+                'Panel de Administración',
+                style: AppTextStyles.h6.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
-              _buildQuickActionsGrid(),
-              const SizedBox(height: 24),
-              Obx(() {
-                if (controller.upcomingReservations.isNotEmpty) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Próximas Reservaciones',
-                        style: AppTextStyles.h6.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      _buildUpcomingReservations(),
-                      const SizedBox(height: 24),
-                    ],
-                  );
-                }
-                return const SizedBox.shrink();
-              }),
-              Obx(() {
-                if (controller.isCurrentUserAdmin) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Panel de Administración',
-                        style: AppTextStyles.h6.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      const AdminMenuCard(),
-                      const SizedBox(height: 24),
-                    ],
-                  );
-                }
-                return const SizedBox.shrink();
-              }),
-              Obx(() {
-                if (controller.isCurrentUserStaff &&
-                    controller.quickStats.isNotEmpty) {
-                  return Column(
-                    children: [_buildQuickStats(), const SizedBox(height: 24)],
-                  );
-                }
-                return const SizedBox.shrink();
-              }),
+              const SizedBox(height: 12),
+              _buildAdminPanel(),
             ],
-          ),
+          ],
         ),
       ),
     );
   }
 
-  // ✅ CORREGIDO: AppBar sin uso innecesario de Obx
+  /// AppBar simplificada
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       title: Text(
@@ -107,31 +77,28 @@ class HomeView extends GetView<HomeController> {
         ),
       ),
       actions: [
+        // Botón de notificaciones
         IconButton(
           icon: const Icon(Icons.notifications_outlined),
           onPressed: controller.navigateToNotifications,
         ),
+
+        // Botón de perfil simplificado
         PopupMenuButton<String>(
-          icon: Obx(
-            () => CircleAvatar(
-              backgroundColor: AppColors.white,
-              child: Text(
-                controller.currentUser.value?.fullName.isNotEmpty == true
-                    ? controller.currentUser.value!.fullName[0].toUpperCase()
-                    : 'U',
-                style: AppTextStyles.labelLarge.copyWith(
-                  color: AppColors.primaryBlue,
-                  fontWeight: FontWeight.bold,
-                ),
+          icon: CircleAvatar(
+            backgroundColor: AppColors.white,
+            child: Text(
+              controller.currentUser?.fullName.isNotEmpty == true
+                  ? controller.currentUser!.fullName[0].toUpperCase()
+                  : 'U',
+              style: AppTextStyles.labelLarge.copyWith(
+                color: AppColors.primaryBlue,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
           onSelected: (value) {
             switch (value) {
-              case 'profile':
-                break;
-              case 'settings':
-                break;
               case 'logout':
                 controller.showLogoutDialog();
                 break;
@@ -141,22 +108,10 @@ class HomeView extends GetView<HomeController> {
               (context) => [
                 PopupMenuItem(
                   value: 'profile',
-                  child: Obx(
-                    () => ListTile(
-                      leading: const Icon(Icons.person),
-                      title: const Text('Perfil'),
-                      subtitle: Text(
-                        controller.currentUser.value?.roleDescription ??
-                            'Sin rol',
-                      ),
-                    ),
-                  ),
-                ),
-                const PopupMenuItem(
-                  value: 'settings',
                   child: ListTile(
-                    leading: Icon(Icons.settings),
-                    title: Text('Configuración'),
+                    leading: const Icon(Icons.person),
+                    title: const Text('Perfil'),
+                    subtitle: Text(controller.currentUserRole),
                   ),
                 ),
                 const PopupMenuDivider(),
@@ -176,44 +131,45 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  // ✅ CORREGIDO: Drawer con Obx solo donde es necesario
+  /// Drawer simplificado
   Widget _buildDrawer() {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          Obx(
-            () => UserAccountsDrawerHeader(
-              decoration: const BoxDecoration(
-                gradient: AppColors.primaryGradient,
+          // Header del drawer simplificado
+          UserAccountsDrawerHeader(
+            decoration: const BoxDecoration(
+              gradient: AppColors.primaryGradient,
+            ),
+            accountName: Text(
+              controller.currentUserName,
+              style: AppTextStyles.subtitle1.copyWith(
+                color: AppColors.white,
+                fontWeight: FontWeight.bold,
               ),
-              accountName: Text(
-                controller.currentUser.value?.fullName ?? 'Usuario',
-                style: AppTextStyles.subtitle1.copyWith(
-                  color: AppColors.white,
+            ),
+            accountEmail: Text(
+              controller.currentUserRole,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.white.withOpacity(0.8),
+              ),
+            ),
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: AppColors.white,
+              child: Text(
+                controller.currentUser?.fullName.isNotEmpty == true
+                    ? controller.currentUser!.fullName[0].toUpperCase()
+                    : 'U',
+                style: AppTextStyles.h5.copyWith(
+                  color: AppColors.primaryBlue,
                   fontWeight: FontWeight.bold,
-                ),
-              ),
-              accountEmail: Text(
-                controller.currentUser.value?.roleDescription ?? 'Sin rol',
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.white.withOpacity(0.8),
-                ),
-              ),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: AppColors.white,
-                child: Text(
-                  controller.currentUser.value?.fullName.isNotEmpty == true
-                      ? controller.currentUser.value!.fullName[0].toUpperCase()
-                      : 'U',
-                  style: AppTextStyles.h5.copyWith(
-                    color: AppColors.primaryBlue,
-                    fontWeight: FontWeight.bold,
-                  ),
                 ),
               ),
             ),
           ),
+
+          // Opciones del menú
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Inicio'),
@@ -260,19 +216,18 @@ class HomeView extends GetView<HomeController> {
             },
           ),
           const Divider(),
-          Obx(() {
-            if (controller.currentUser.value?.isAdmin == true) {
-              return ListTile(
-                leading: const Icon(Icons.admin_panel_settings),
-                title: const Text('Administración'),
-                onTap: () {
-                  Get.back();
-                  controller.navigateToAdminPanel();
-                },
-              );
-            }
-            return const SizedBox.shrink();
-          }),
+
+          // Admin option (solo para administradores)
+          if (controller.isCurrentUserAdmin)
+            ListTile(
+              leading: const Icon(Icons.admin_panel_settings),
+              title: const Text('Administración'),
+              onTap: () {
+                Get.back();
+                controller.navigateToAdminPanel();
+              },
+            ),
+
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text(
@@ -289,190 +244,268 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _buildStatusMessage() {
-    return Obx(
-      () => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color:
-              controller.hasCompletedInduction
-                  ? AppColors.success.withOpacity(0.1)
-                  : AppColors.warning.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color:
-                controller.hasCompletedInduction
-                    ? AppColors.success.withOpacity(0.3)
-                    : AppColors.warning.withOpacity(0.3),
-            width: 1,
+  /// Header de bienvenida simplificado
+  Widget _buildWelcomeHeader() {
+    final greeting = _getTimeOfDayGreeting();
+    final firstName =
+        controller.currentUser?.fullName.split(' ').first ?? 'Usuario';
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryBlue.withOpacity(0.3),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
           ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              controller.hasCompletedInduction
-                  ? Icons.check_circle
-                  : Icons.warning,
-              color:
-                  controller.hasCompletedInduction
-                      ? AppColors.success
-                      : AppColors.warning,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                controller.getUserStatusMessage(),
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color:
-                      controller.hasCompletedInduction
-                          ? AppColors.success
-                          : AppColors.warning,
-                ),
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildQuickActionsGrid() {
-    return Obx(() {
-      final actions = controller.getQuickActions();
-
-      return GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 1.1,
-        ),
-        itemCount: actions.length,
-        itemBuilder: (context, index) {
-          final action = actions[index];
-          return MenuCard(
-            title: action['title'],
-            subtitle: action['subtitle'],
-            icon: action['icon'],
-            color: action['color'],
-            onTap: action['action'],
-            isPriority: action['priority'] ?? false,
-          );
-        },
-      );
-    });
-  }
-
-  Widget _buildUpcomingReservations() {
-    return Obx(
-      () => ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: controller.upcomingReservations.length,
-        itemBuilder: (context, index) {
-          final reservation = controller.upcomingReservations[index];
-
-          return Card(
-            margin: const EdgeInsets.only(bottom: 8),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: AppColors.primaryBlue.withOpacity(0.1),
-                child: Icon(Icons.event, color: AppColors.primaryBlue),
-              ),
-              title: Text(
-                reservation.zone.displayName,
-                style: AppTextStyles.subtitle1,
-              ),
-              subtitle: Text(
-                reservation.formattedDateTime,
-                style: AppTextStyles.caption,
-              ),
-              trailing: Text(
-                reservation.timeUntilReservation,
-                style: AppTextStyles.labelSmall.copyWith(
-                  color: AppColors.primaryBlue,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onTap: controller.navigateToMyReservations,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '$greeting, $firstName',
+            style: AppTextStyles.h4.copyWith(
+              color: AppColors.white,
+              fontWeight: FontWeight.bold,
             ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildQuickStats() {
-    return Obx(() {
-      final stats = controller.quickStats;
-      if (stats.isEmpty) return const SizedBox.shrink();
-
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          const SizedBox(height: 8),
+          Row(
             children: [
+              Icon(
+                _getRoleIcon(),
+                color: AppColors.white.withOpacity(0.9),
+                size: 18,
+              ),
+              const SizedBox(width: 8),
               Text(
-                'Estadísticas del Taller',
-                style: AppTextStyles.h6.copyWith(fontWeight: FontWeight.bold),
+                controller.currentUserRole,
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.white.withOpacity(0.9),
+                ),
               ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  if (stats['totalTools'] != null) ...[
-                    Expanded(
-                      child: _buildStatItem(
-                        'Herramientas',
-                        '${stats['availableTools']}/${stats['totalTools']}',
-                        Icons.build,
-                        AppColors.primaryBlue,
-                      ),
+              const Spacer(),
+              if (!controller.hasCompletedInduction)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.warning.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Inducción Pendiente',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w600,
                     ),
-                  ],
-                  if (stats['todayReservations'] != null) ...[
-                    Expanded(
-                      child: _buildStatItem(
-                        'Hoy',
-                        '${stats['todayReservations']}',
-                        Icons.today,
-                        AppColors.secondaryGreen,
+                  ),
+                )
+              else
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.success.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.check_circle,
+                        size: 12,
+                        color: AppColors.white,
                       ),
-                    ),
-                  ],
-                ],
-              ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Verificado',
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
-        ),
-      );
-    });
+        ],
+      ),
+    );
   }
 
-  Widget _buildStatItem(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Column(
-      children: [
-        Icon(icon, color: color, size: 32),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: AppTextStyles.h5.copyWith(
-            color: color,
-            fontWeight: FontWeight.bold,
+  /// Mensaje de estado simplificado
+  Widget _buildStatusMessage() {
+    String message;
+    Color color;
+    IconData icon;
+
+    if (!controller.hasCompletedInduction) {
+      message = '⚠️ Completa tu inducción para acceder a todas las funciones';
+      color = AppColors.warning;
+      icon = Icons.warning;
+    } else {
+      message = '✅ Todo al día - Bienvenido al taller';
+      color = AppColors.success;
+      icon = Icons.check_circle;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              message,
+              style: AppTextStyles.bodyMedium.copyWith(color: color),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Grid de acciones rápidas - SIN OBX
+  Widget _buildQuickActionsGrid() {
+    final actions = controller.getQuickActions();
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 1.1,
+      ),
+      itemCount: actions.length,
+      itemBuilder: (context, index) {
+        final action = actions[index];
+        return MenuCard(
+          title: action['title'],
+          subtitle: action['subtitle'],
+          icon: action['icon'],
+          color: action['color'],
+          onTap: action['action'],
+          isPriority: action['priority'] ?? false,
+        );
+      },
+    );
+  }
+
+  /// Panel de admin simplificado
+  Widget _buildAdminPanel() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.primaryBlue, AppColors.primaryBlueDark],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryBlue.withOpacity(0.3),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: controller.navigateToAdminPanel,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.admin_panel_settings,
+                    color: AppColors.white,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Panel de Administración',
+                        style: AppTextStyles.subtitle1.copyWith(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Gestión completa del sistema',
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.white.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: AppColors.white.withOpacity(0.7),
+                  size: 16,
+                ),
+              ],
+            ),
           ),
         ),
-        Text(
-          label,
-          style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
-        ),
-      ],
+      ),
     );
+  }
+
+  // ========== MÉTODOS AUXILIARES ==========
+  String _getTimeOfDayGreeting() {
+    final hour = DateTime.now().hour;
+
+    if (hour < 12) {
+      return 'Buenos días';
+    } else if (hour < 18) {
+      return 'Buenas tardes';
+    } else {
+      return 'Buenas noches';
+    }
+  }
+
+  IconData _getRoleIcon() {
+    final user = controller.currentUser;
+    if (user?.isAdmin == true) {
+      return Icons.admin_panel_settings;
+    } else if (user?.isStaff == true) {
+      return Icons.work;
+    } else {
+      return Icons.school;
+    }
   }
 }

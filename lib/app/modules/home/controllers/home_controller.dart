@@ -4,10 +4,10 @@ import '../../../data/repositories/auth_repository.dart';
 import '../../../data/repositories/reservation_repository.dart';
 import '../../../data/repositories/tool_repository.dart';
 import '../../../data/models/user_model.dart';
-import '../../../data/models/reservation_model.dart';
 import '../../../routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
+/// Controlador simplificado para la pantalla principal
 class HomeController extends GetxController {
   final AuthRepository authRepository;
   final ReservationRepository reservationRepository;
@@ -19,14 +19,9 @@ class HomeController extends GetxController {
     required this.toolRepository,
   });
 
-  // ✅ CORREGIDO: Todas las propiedades observables
-  final RxBool isLoading = false.obs;
-  final Rx<UserModel?> currentUser = Rx<UserModel?>(null);
-  final RxList<ReservationModel> upcomingReservations =
-      <ReservationModel>[].obs;
-  final RxList<ReservationModel> todayReservations = <ReservationModel>[].obs;
-  final RxMap<String, dynamic> quickStats = <String, dynamic>{}.obs;
-  final RxBool isDrawerOpen = false.obs;
+  // Variables simples (no observables para evitar problemas)
+  UserModel? currentUser;
+  bool isLoading = false;
 
   @override
   void onInit() {
@@ -34,97 +29,26 @@ class HomeController extends GetxController {
     _initializeHome();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-    _loadDashboardData();
-  }
-
+  /// Inicializar la pantalla de home
   void _initializeHome() {
-    currentUser.value = authRepository.getCurrentUser();
+    // Obtener usuario actual
+    currentUser = authRepository.getCurrentUser();
 
-    if (currentUser.value == null) {
+    // Si no hay usuario, redirigir al login
+    if (currentUser == null) {
       Get.offAllNamed(AppRoutes.LOGIN);
       return;
     }
 
+    // Mostrar mensaje de bienvenida
     _showWelcomeMessage();
   }
 
-  Future<void> _loadDashboardData() async {
-    try {
-      isLoading.value = true;
-
-      if (currentUser.value == null) return;
-
-      await _loadUpcomingReservations();
-      await _loadTodayReservations();
-      await _loadQuickStats();
-    } catch (e) {
-      print('Error cargando datos del dashboard: $e');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> _loadUpcomingReservations() async {
-    try {
-      if (currentUser.value == null) return;
-
-      final reservations = await reservationRepository
-          .getFutureReservationsByUser(currentUser.value!.id);
-
-      upcomingReservations.value = reservations.take(3).toList();
-    } catch (e) {
-      print('Error cargando reservaciones próximas: $e');
-    }
-  }
-
-  Future<void> _loadTodayReservations() async {
-    try {
-      if (currentUser.value == null || !isCurrentUserStaff) return;
-
-      final reservations = await reservationRepository.getTodayReservations();
-      todayReservations.value = reservations;
-    } catch (e) {
-      print('Error cargando reservaciones de hoy: $e');
-    }
-  }
-
-  Future<void> _loadQuickStats() async {
-    try {
-      Map<String, dynamic> stats = {};
-
-      if (currentUser.value != null) {
-        final userReservations = await reservationRepository
-            .getReservationsByUser(currentUser.value!.id);
-        stats['userReservations'] = userReservations.length;
-        stats['activeReservations'] =
-            userReservations.where((r) => r.isActive).length;
-
-        if (isCurrentUserStaff) {
-          final toolStats = await toolRepository.getToolsStats();
-          final reservationStats =
-              await reservationRepository.getReservationsStats();
-
-          stats['totalTools'] = toolStats['totalTools'] ?? 0;
-          stats['availableTools'] = toolStats['availableTools'] ?? 0;
-          stats['todayReservations'] =
-              reservationStats['todayReservations'] ?? 0;
-          stats['totalUsers'] = reservationStats['totalReservations'] ?? 0;
-        }
-      }
-
-      quickStats.value = stats;
-    } catch (e) {
-      print('Error cargando estadísticas rápidas: $e');
-    }
-  }
-
+  /// Mostrar mensaje de bienvenida
   void _showWelcomeMessage() {
-    if (currentUser.value == null) return;
+    if (currentUser == null) return;
 
-    final user = currentUser.value!;
+    final user = currentUser!;
     final timeOfDay = _getTimeOfDayGreeting();
 
     Get.snackbar(
@@ -134,6 +58,7 @@ class HomeController extends GetxController {
     );
   }
 
+  /// Obtener saludo según la hora del día
   String _getTimeOfDayGreeting() {
     final hour = DateTime.now().hour;
 
@@ -146,13 +71,30 @@ class HomeController extends GetxController {
     }
   }
 
-  // ✅ MÉTODOS DE NAVEGACIÓN
-  void navigateToTools() => Get.toNamed(AppRoutes.TOOLS_CATALOG);
-  void navigateToReservations() => Get.toNamed(AppRoutes.RESERVATIONS);
-  void navigateToMyReservations() => Get.toNamed(AppRoutes.MY_RESERVATIONS);
-  void navigateToSchedule() => Get.toNamed(AppRoutes.SCHEDULE);
-  void navigateToInduction() => Get.toNamed(AppRoutes.INDUCTION);
-  void navigateToNotifications() => Get.toNamed(AppRoutes.NOTIFICATIONS);
+  // ========== MÉTODOS DE NAVEGACIÓN ==========
+  void navigateToTools() {
+    Get.toNamed(AppRoutes.TOOLS_CATALOG);
+  }
+
+  void navigateToReservations() {
+    Get.toNamed(AppRoutes.RESERVATIONS);
+  }
+
+  void navigateToMyReservations() {
+    Get.toNamed(AppRoutes.MY_RESERVATIONS);
+  }
+
+  void navigateToSchedule() {
+    Get.toNamed(AppRoutes.SCHEDULE);
+  }
+
+  void navigateToInduction() {
+    Get.toNamed(AppRoutes.INDUCTION);
+  }
+
+  void navigateToNotifications() {
+    Get.toNamed(AppRoutes.NOTIFICATIONS);
+  }
 
   void navigateToAdminPanel() {
     if (isCurrentUserAdmin) {
@@ -160,29 +102,36 @@ class HomeController extends GetxController {
     }
   }
 
+  /// Cerrar sesión
   Future<void> logout() async {
     try {
       await authRepository.logout();
       Get.offAllNamed(AppRoutes.LOGIN);
     } catch (e) {
       print('Error cerrando sesión: $e');
+      // Forzar navegación al login de todos modos
+      Get.offAllNamed(AppRoutes.LOGIN);
     }
   }
 
-  Future<void> refreshDashboard() async {
-    await _loadDashboardData();
+  // ========== GETTERS SIMPLES ==========
+  bool get isCurrentUserAdmin => currentUser?.isAdmin ?? false;
+
+  bool get isCurrentUserStaff => currentUser?.isStaff ?? false;
+
+  String get currentUserName => currentUser?.fullName ?? 'Usuario';
+
+  String get currentUserRole => currentUser?.roleDescription ?? 'Estudiante';
+
+  bool get hasCompletedInduction {
+    try {
+      return authRepository.hasCurrentUserCompletedInduction();
+    } catch (e) {
+      return false; // Por defecto false si hay error
+    }
   }
 
-  // ✅ GETTERS CORREGIDOS
-  bool get isCurrentUserAdmin => currentUser.value?.isAdmin ?? false;
-  bool get isCurrentUserStaff => currentUser.value?.isStaff ?? false;
-  String get currentUserName => currentUser.value?.fullName ?? 'Usuario';
-  String get currentUserRole => currentUser.value?.roleDescription ?? 'Sin rol';
-  bool get hasCompletedInduction =>
-      authRepository.hasCurrentUserCompletedInduction();
-  int get userTotalReservations => quickStats['userReservations'] ?? 0;
-  int get userActiveReservations => quickStats['activeReservations'] ?? 0;
-
+  /// Mostrar diálogo de confirmación para cerrar sesión
   void showLogoutDialog() {
     Get.dialog(
       AlertDialog(
@@ -205,6 +154,7 @@ class HomeController extends GetxController {
     );
   }
 
+  /// Obtener acciones rápidas disponibles según el rol del usuario
   List<Map<String, dynamic>> getQuickActions() {
     List<Map<String, dynamic>> actions = [
       {
@@ -237,6 +187,7 @@ class HomeController extends GetxController {
       },
     ];
 
+    // Agregar inducción si no la ha completado
     if (!hasCompletedInduction) {
       actions.insert(0, {
         'title': 'Videos de Inducción',
@@ -248,6 +199,7 @@ class HomeController extends GetxController {
       });
     }
 
+    // Agregar panel de admin si es administrador
     if (isCurrentUserAdmin) {
       actions.add({
         'title': 'Panel de Administración',
@@ -259,18 +211,5 @@ class HomeController extends GetxController {
     }
 
     return actions;
-  }
-
-  String getUserStatusMessage() {
-    if (!hasCompletedInduction) {
-      return '⚠️ Completa tu inducción para acceder a todas las funciones';
-    }
-
-    if (upcomingReservations.isNotEmpty) {
-      final nextReservation = upcomingReservations.first;
-      return '📅 Próxima reservación: ${nextReservation.zone.displayName} - ${nextReservation.timeUntilReservation}';
-    }
-
-    return '✅ Todo al día';
   }
 }
