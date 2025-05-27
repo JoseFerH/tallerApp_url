@@ -18,7 +18,7 @@ class InductionView extends GetView<InductionController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.simple(Strings.inductionTitle),
+      appBar: CustomAppBar.simple(Strings.inductionTitle, actions: []),
       body: Column(
         children: [
           _buildHeader(),
@@ -122,6 +122,7 @@ class InductionView extends GetView<InductionController> {
             hint: 'Buscar videos...',
             onChanged: controller.updateSearch,
             onClear: controller.clearSearch,
+            controller: null,
           ),
           const SizedBox(height: 12),
 

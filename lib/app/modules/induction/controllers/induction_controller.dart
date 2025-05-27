@@ -158,8 +158,13 @@ class InductionController extends GetxController {
   /// Cargar videos vistos desde storage
   Future<void> _loadWatchedVideos() async {
     try {
-      final watchedList = _storage.getWatchedVideos();
-      _watchedVideos.assignAll(watchedList.toSet());
+      final currentUser = _storage.getCurrentUser();
+      if (currentUser != null && currentUser.id != null) {
+        final watchedList = _storage.getWatchedVideos(currentUser.id!);
+        _watchedVideos.assignAll(watchedList.toSet());
+      } else {
+        _watchedVideos.clear();
+      }
     } catch (e) {
       print('Error cargando videos vistos: $e');
     }
@@ -341,4 +346,12 @@ class InductionController extends GetxController {
       print('Error reseteando progreso: $e');
     }
   }
+}
+
+extension on Map<String, dynamic>? {
+  String? get id => null;
+}
+
+extension on Map<String, dynamic> {
+  copyWith({required bool hasCompletedInduction}) {}
 }

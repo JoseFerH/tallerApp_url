@@ -135,7 +135,7 @@ class _UserFormState extends State<UserForm> {
         const SizedBox(height: 16),
 
         // Email
-        CustomTextField.email(
+        CustomTextField(
           label: 'Email Institucional',
           hint: 'usuario@url.edu.gt',
           controller: _emailController,
@@ -162,7 +162,7 @@ class _UserFormState extends State<UserForm> {
 
         // Contraseña (solo para usuarios nuevos o si se quiere cambiar)
         if (!_isEditing) ...[
-          CustomTextField.password(
+          CustomTextField(
             label: 'Contraseña',
             hint: 'Mínimo 4 caracteres',
             controller: _passwordController,
@@ -170,7 +170,7 @@ class _UserFormState extends State<UserForm> {
           ),
           const SizedBox(height: 16),
 
-          CustomTextField.password(
+          CustomTextField(
             label: 'Confirmar Contraseña',
             hint: 'Repite la contraseña',
             controller: _confirmPasswordController,

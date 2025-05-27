@@ -25,10 +25,10 @@ class CalendarView extends GetView<ReservationController> {
             children: [
               // Widget del calendario
               const CalendarWidget(),
-              
+
               // Información de la fecha seleccionada
               _buildSelectedDateInfo(),
-              
+
               // Reservaciones del día seleccionado
               _buildDayReservations(),
             ],
@@ -43,7 +43,7 @@ class CalendarView extends GetView<ReservationController> {
       ),
     );
   }
-  
+
   /// AppBar personalizada
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
@@ -61,7 +61,7 @@ class CalendarView extends GetView<ReservationController> {
           icon: const Icon(Icons.event_note, color: AppColors.white),
           tooltip: 'Mis Reservaciones',
         ),
-        
+
         // Menú de opciones
         PopupMenuButton<String>(
           icon: const Icon(Icons.more_vert, color: AppColors.white),
@@ -75,103 +75,113 @@ class CalendarView extends GetView<ReservationController> {
                 break;
             }
           },
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'today',
-              child: ListTile(
-                leading: Icon(Icons.today),
-                title: Text('Ir a Hoy'),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-            const PopupMenuItem(
-              value: 'refresh',
-              child: ListTile(
-                leading: Icon(Icons.refresh),
-                title: Text('Actualizar'),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ],
+          itemBuilder:
+              (context) => [
+                const PopupMenuItem(
+                  value: 'today',
+                  child: ListTile(
+                    leading: Icon(Icons.today),
+                    title: Text('Ir a Hoy'),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'refresh',
+                  child: ListTile(
+                    leading: Icon(Icons.refresh),
+                    title: Text('Actualizar'),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ],
         ),
       ],
     );
   }
-  
+
   /// Información de la fecha seleccionada
   Widget _buildSelectedDateInfo() {
-    return Obx(() => Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.cardShadow,
-            offset: const Offset(0, 2),
-            blurRadius: 8,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Fecha seleccionada
-          Row(
-            children: [
-              Icon(
-                Icons.calendar_today,
-                color: AppColors.primaryBlue,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                _getFormattedDate(controller.selectedDate.value),
-                style: AppTextStyles.h6.copyWith(
+    return Obx(
+      () => Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.cardShadow,
+              offset: const Offset(0, 2),
+              blurRadius: 8,
+              spreadRadius: 0,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Fecha seleccionada
+            Row(
+              children: [
+                Icon(
+                  Icons.calendar_today,
                   color: AppColors.primaryBlue,
-                  fontWeight: FontWeight.bold,
+                  size: 20,
                 ),
-              ),
-              const Spacer(),
-              if (controller.hasReservationsForDay(controller.selectedDate.value))
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryBlue.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                const SizedBox(width: 8),
+                Text(
+                  _getFormattedDate(controller.selectedDate.value),
+                  style: AppTextStyles.h6.copyWith(
+                    color: AppColors.primaryBlue,
+                    fontWeight: FontWeight.bold,
                   ),
-                  child: Text(
-                    '${controller.getReservationsForDay(controller.selectedDate.value).length} reservación(es)',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.primaryBlue,
-                      fontWeight: FontWeight.bold,
+                ),
+                const Spacer(),
+                if (controller.hasReservationsForDay(
+                  controller.selectedDate.value,
+                ))
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryBlue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      '${controller.getReservationsForDay(controller.selectedDate.value).length} reservación(es)',
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.primaryBlue,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-            ],
-          ),
-          
-          const SizedBox(height: 12),
-          
-          // Información adicional
-          Text(
-            _getDateDescription(controller.selectedDate.value),
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              ],
             ),
-          ),
-        ],
+
+            const SizedBox(height: 12),
+
+            // Información adicional
+            Text(
+              _getDateDescription(controller.selectedDate.value),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
-  
+
   /// Reservaciones del día seleccionado
   Widget _buildDayReservations() {
     return Obx(() {
-      final dayReservations = controller.getReservationsForDay(controller.selectedDate.value);
-      
+      final dayReservations = controller.getReservationsForDay(
+        controller.selectedDate.value,
+      );
+
       if (dayReservations.isEmpty) {
         return Container(
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -219,7 +229,7 @@ class CalendarView extends GetView<ReservationController> {
           ),
         );
       }
-      
+
       return Container(
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         decoration: BoxDecoration(
@@ -260,9 +270,9 @@ class CalendarView extends GetView<ReservationController> {
                 ],
               ),
             ),
-            
+
             const Divider(height: 1),
-            
+
             // Lista de reservaciones
             ListView.separated(
               shrinkWrap: true,
@@ -275,10 +285,13 @@ class CalendarView extends GetView<ReservationController> {
                   reservation: reservation,
                   isCompact: true,
                   showDate: false,
-                  onCancel: reservation.canBeCanceled && 
-                            reservation.userId == controller.currentUser?.id
-                      ? () => controller.cancelReservation(reservation)
-                      : null,
+                  onCancel:
+                      reservation.canBeCanceled &&
+                              reservation.userId == controller.currentUser?.id
+                          ? () => controller.cancelReservation(reservation)
+                          : null,
+                  showUserInfo: false,
+                  isDetailed: false,
                 );
               },
             ),
@@ -287,32 +300,48 @@ class CalendarView extends GetView<ReservationController> {
       );
     });
   }
-  
+
   /// Obtener fecha formateada
   String _getFormattedDate(DateTime date) {
     final months = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
     ];
-    
+
     final weekdays = [
-      'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+      'Domingo',
     ];
-    
+
     final weekday = weekdays[date.weekday - 1];
     final month = months[date.month - 1];
-    
+
     return '$weekday, ${date.day} de $month ${date.year}';
   }
-  
+
   /// Obtener descripción de la fecha
   String _getDateDescription(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final selectedDay = DateTime(date.year, date.month, date.day);
-    
+
     final difference = selectedDay.difference(today).inDays;
-    
+
     if (difference == 0) {
       return 'Hoy - Selecciona los espacios disponibles';
     } else if (difference == 1) {

@@ -6,8 +6,10 @@ import '../../../data/providers/local_storage_provider.dart';
 class InductionBinding extends Bindings {
   @override
   void dependencies() {
-    // Providers
-    Get.lazyPut<LocalStorageProvider>(() => LocalStorageProvider());
+    // Providers - Solo crear si no existe
+    if (!Get.isRegistered<LocalStorageProvider>()) {
+      Get.lazyPut<LocalStorageProvider>(() => LocalStorageProvider());
+    }
 
     // Controllers
     Get.lazyPut<InductionController>(

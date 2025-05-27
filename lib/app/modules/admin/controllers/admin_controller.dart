@@ -5,6 +5,7 @@ import '../../../data/models/user_model.dart';
 import '../../../core/utils/constants.dart';
 import '../../../routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import '../../../core/utils/helpers.dart';
 
 /// Controlador para el panel de administración
 class AdminController extends GetxController {
@@ -344,4 +345,18 @@ class AdminController extends GetxController {
       searchQuery.value.isNotEmpty ||
       selectedRoleFilter.value != null ||
       !showActiveOnly.value;
+
+  get searchController => null;
+
+  get clearSearch => null;
+
+  get refreshUsers => null;
+
+  get updateSearch => null;
+
+  get users => null;
+
+  Future<void> updateUser(UserModel user) async {}
+
+  Future<void> createUser(UserModel user) async {}
 }

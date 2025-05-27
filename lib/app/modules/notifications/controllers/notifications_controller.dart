@@ -33,7 +33,7 @@ class NotificationsController extends GetxController {
             case 'high':
               return notification.priority == NotificationPriority.high;
             case 'medium':
-              return notification.priority == NotificationPriority.medium;
+              return notification.priority == NotificationPriority.normal;
             case 'low':
               return notification.priority == NotificationPriority.low;
             default:
@@ -75,7 +75,9 @@ class NotificationsController extends GetxController {
       final notificationsList = _storage.getNotifications();
       final readList = _storage.getReadNotifications();
 
-      _notifications.assignAll(notificationsList);
+      _notifications.assignAll(
+        notificationsList as Iterable<NotificationModel>,
+      );
       _readNotifications.assignAll(readList.toSet());
     } catch (e) {
       print('Error cargando notificaciones: $e');
@@ -219,7 +221,7 @@ class NotificationsController extends GetxController {
         message:
             'Gracias por usar nuestro sistema de gestión de talleres. Explora todas las funcionalidades disponibles.',
         type: NotificationType.general,
-        priority: NotificationPriority.medium,
+        priority: NotificationPriority.normal,
       ),
 
       NotificationModel.scheduleChange(
@@ -233,6 +235,9 @@ class NotificationsController extends GetxController {
         message:
             'Tienes una reservación mañana a las 2:00 PM en el área de impresión 3D.',
         reservationId: 'test-reservation-123',
+        userId: '',
+        zoneName: '',
+        reservationTime: DateTime.now().add(const Duration(days: 1, hours: 2)),
       ),
 
       NotificationModel.systemUpdate(
@@ -244,7 +249,7 @@ class NotificationsController extends GetxController {
         title: 'Mantenimiento Programado',
         message:
             'El sistema estará en mantenimiento el próximo domingo de 2:00 AM a 6:00 AM. Durante este tiempo no estará disponible.',
-        type: NotificationType.maintenance,
+        type: NotificationType.maintenanceAlert,
         priority: NotificationPriority.high,
       ),
     ];
@@ -268,7 +273,7 @@ class NotificationsController extends GetxController {
               .length,
       'medium_priority':
           _notifications
-              .where((n) => n.priority == NotificationPriority.medium)
+              .where((n) => n.priority == NotificationPriority.normal)
               .length,
       'low_priority':
           _notifications

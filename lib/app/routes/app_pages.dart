@@ -48,7 +48,7 @@ class AppPages {
       name: AppRoutes.LOGIN,
       page: () => const LoginView(),
       binding: AuthBinding(),
-      transition: Transition.slideInUp,
+      transition: Transition.upToDown,
     ),
 
     // Pantalla principal

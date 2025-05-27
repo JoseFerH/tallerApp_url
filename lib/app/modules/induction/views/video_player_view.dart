@@ -22,7 +22,7 @@ class VideoPlayerView extends GetView<InductionController> {
 
     if (video == null) {
       return Scaffold(
-        appBar: CustomAppBar.simple('Error'),
+        appBar: CustomAppBar.simple('Error', actions: []),
         body: const Center(child: Text('Video no encontrado')),
       );
     }

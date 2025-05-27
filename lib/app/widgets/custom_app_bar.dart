@@ -30,6 +30,29 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.titleWidget,
   });
 
+  /// Named constructor para la variante “Admin”
+  CustomAppBar.admin(
+    String panelTitle, {
+    super.key,
+    List<Widget>? actions,
+    Widget? leading,
+    VoidCallback? onBackPressed,
+    Color? backgroundColor,
+    Color? foregroundColor,
+    double elevation = 4.0,
+    bool centerTitle = true,
+    Widget? titleWidget,
+  }) : title = panelTitle,
+       actions = actions,
+       leading = leading,
+       showBack = false,
+       backgroundColor = backgroundColor ?? AppColors.error,
+       foregroundColor = foregroundColor ?? AppColors.white,
+       elevation = elevation,
+       onBackPressed = onBackPressed,
+       centerTitle = centerTitle,
+       titleWidget = titleWidget;
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -68,6 +91,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  static simple(
+    String inductionTitle, {
+    required List<StatefulWidget> actions,
+  }) {}
 }
 
 /// AppBar específica para la pantalla principal

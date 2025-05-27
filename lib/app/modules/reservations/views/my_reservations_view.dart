@@ -24,11 +24,11 @@ class MyReservationsView extends GetView<ReservationController> {
       appBar: CustomAppBar.simple(
         Strings.myReservationsTitle,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: controller.refreshReservations,
-            tooltip: 'Actualizar',
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.refresh),
+          //   onPressed: controller.refreshReservations,
+          //   tooltip: 'Actualizar',
+          // ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
             onSelected: _handleMenuAction,
@@ -535,7 +535,7 @@ class MyReservationsView extends GetView<ReservationController> {
     );
 
     if (confirmed == true) {
-      await controller.cancelReservation(reservation.id);
+      await controller.cancelReservation(reservation.id as ReservationModel);
     }
   }
 }

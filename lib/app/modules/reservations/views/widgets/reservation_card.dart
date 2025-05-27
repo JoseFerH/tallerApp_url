@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:taller_url/app/core/utils/constants.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../data/models/reservation_model.dart';
@@ -13,7 +14,7 @@ class ReservationCard extends GetView<ReservationController> {
   final bool isCompact;
   final bool showDate;
   final bool showActions;
-  
+
   const ReservationCard({
     super.key,
     required this.reservation,
@@ -22,14 +23,17 @@ class ReservationCard extends GetView<ReservationController> {
     this.isCompact = false,
     this.showDate = true,
     this.showActions = true,
+    required bool showUserInfo,
+    required bool isDetailed,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: isCompact 
-          ? EdgeInsets.zero 
-          : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin:
+          isCompact
+              ? EdgeInsets.zero
+              : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: isCompact ? 0 : 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(isCompact ? 0 : 12),
@@ -44,18 +48,18 @@ class ReservationCard extends GetView<ReservationController> {
             children: [
               // Header con zona y estado
               _buildHeader(),
-              
+
               const SizedBox(height: 8),
-              
+
               // Información de fecha y hora
               if (showDate) _buildDateTimeInfo(),
-              
+
               // Información adicional
               if (!isCompact) ...[
                 const SizedBox(height: 8),
                 _buildAdditionalInfo(),
               ],
-              
+
               // Acciones (cancelar, etc.)
               if (showActions && !isCompact) ...[
                 const SizedBox(height: 12),
@@ -67,7 +71,7 @@ class ReservationCard extends GetView<ReservationController> {
       ),
     );
   }
-  
+
   /// Header con zona y estado
   Widget _buildHeader() {
     return Row(
@@ -86,9 +90,9 @@ class ReservationCard extends GetView<ReservationController> {
             size: 20,
           ),
         ),
-        
+
         const SizedBox(width: 12),
-        
+
         // Información de la zona
         Expanded(
           child: Column(
@@ -110,18 +114,18 @@ class ReservationCard extends GetView<ReservationController> {
             ],
           ),
         ),
-        
+
         // Badge de estado
         _buildStatusBadge(),
       ],
     );
   }
-  
+
   /// Badge de estado de la reservación
   Widget _buildStatusBadge() {
     Color statusColor;
     IconData statusIcon;
-    
+
     switch (reservation.status) {
       case ReservationStatus.activa:
         statusColor = Colors.green;
@@ -140,25 +144,18 @@ class ReservationCard extends GetView<ReservationController> {
         statusIcon = Icons.warning;
         break;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: statusColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: statusColor.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: statusColor.withOpacity(0.3), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            statusIcon,
-            size: 12,
-            color: statusColor,
-          ),
+          Icon(statusIcon, size: 12, color: statusColor),
           const SizedBox(width: 4),
           Text(
             reservation.status.displayName,
@@ -172,7 +169,7 @@ class ReservationCard extends GetView<ReservationController> {
       ),
     );
   }
-  
+
   /// Información de fecha y hora
   Widget _buildDateTimeInfo() {
     return Container(
@@ -187,11 +184,7 @@ class ReservationCard extends GetView<ReservationController> {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.calendar_today,
-            size: 16,
-            color: AppColors.primaryBlue,
-          ),
+          Icon(Icons.calendar_today, size: 16, color: AppColors.primaryBlue),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -203,11 +196,7 @@ class ReservationCard extends GetView<ReservationController> {
             ),
           ),
           if (reservation.isFuture) ...[
-            Icon(
-              Icons.access_time,
-              size: 16,
-              color: AppColors.textSecondary,
-            ),
+            Icon(Icons.access_time, size: 16, color: AppColors.textSecondary),
             const SizedBox(width: 4),
             Text(
               reservation.timeUntilReservation,
@@ -221,7 +210,7 @@ class ReservationCard extends GetView<ReservationController> {
       ),
     );
   }
-  
+
   /// Información adicional
   Widget _buildAdditionalInfo() {
     return Column(
@@ -232,11 +221,7 @@ class ReservationCard extends GetView<ReservationController> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.description,
-                size: 16,
-                color: AppColors.textSecondary,
-              ),
+              Icon(Icons.description, size: 16, color: AppColors.textSecondary),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -250,16 +235,12 @@ class ReservationCard extends GetView<ReservationController> {
           ),
           const SizedBox(height: 8),
         ],
-        
+
         // Información del usuario (si no es el usuario actual)
         if (reservation.userId != controller.currentUser?.id) ...[
           Row(
             children: [
-              Icon(
-                Icons.person,
-                size: 16,
-                color: AppColors.textSecondary,
-              ),
+              Icon(Icons.person, size: 16, color: AppColors.textSecondary),
               const SizedBox(width: 8),
               Text(
                 reservation.userName,
@@ -271,15 +252,11 @@ class ReservationCard extends GetView<ReservationController> {
           ),
           const SizedBox(height: 8),
         ],
-        
+
         // Duración
         Row(
           children: [
-            Icon(
-              Icons.timer,
-              size: 16,
-              color: AppColors.textSecondary,
-            ),
+            Icon(Icons.timer, size: 16, color: AppColors.textSecondary),
             const SizedBox(width: 8),
             Text(
               '${reservation.durationHours} hora${reservation.durationHours > 1 ? 's' : ''}',
@@ -292,7 +269,7 @@ class ReservationCard extends GetView<ReservationController> {
       ],
     );
   }
-  
+
   /// Acciones disponibles
   Widget _buildActions() {
     return Row(
@@ -301,12 +278,10 @@ class ReservationCard extends GetView<ReservationController> {
         Expanded(
           child: Text(
             'Creada ${_getTimeAgo(reservation.createdAt)}',
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.textLight,
-            ),
+            style: AppTextStyles.caption.copyWith(color: AppColors.textLight),
           ),
         ),
-        
+
         // Botón de cancelar (si aplica)
         if (onCancel != null && reservation.canBeCanceled)
           TextButton.icon(
@@ -321,12 +296,12 @@ class ReservationCard extends GetView<ReservationController> {
       ],
     );
   }
-  
+
   /// Obtener tiempo transcurrido desde la creación
   String _getTimeAgo(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
-    
+
     if (difference.inDays > 0) {
       return 'hace ${difference.inDays} día${difference.inDays > 1 ? 's' : ''}';
     } else if (difference.inHours > 0) {

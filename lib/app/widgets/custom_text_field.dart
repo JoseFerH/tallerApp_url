@@ -62,6 +62,13 @@ class CustomTextField extends StatefulWidget {
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
+
+  static search({
+    required String hint,
+    required controller,
+    required onChanged,
+    required onClear,
+  }) {}
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {

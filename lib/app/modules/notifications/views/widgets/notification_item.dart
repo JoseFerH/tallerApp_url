@@ -243,7 +243,7 @@ class NotificationItem extends StatelessWidget {
         return AppColors.warning;
       case NotificationType.systemUpdate:
         return AppColors.info;
-      case NotificationType.maintenance:
+      case NotificationType.maintenanceAlert:
         return AppColors.error;
     }
   }
@@ -258,7 +258,7 @@ class NotificationItem extends StatelessWidget {
         return Icons.schedule;
       case NotificationType.systemUpdate:
         return Icons.system_update;
-      case NotificationType.maintenance:
+      case NotificationType.maintenanceAlert:
         return Icons.build_outlined;
     }
   }
@@ -273,7 +273,7 @@ class NotificationItem extends StatelessWidget {
         return 'Horario';
       case NotificationType.systemUpdate:
         return 'Sistema';
-      case NotificationType.maintenance:
+      case NotificationType.maintenanceAlert:
         return 'Mantenimiento';
     }
   }
@@ -282,10 +282,13 @@ class NotificationItem extends StatelessWidget {
     switch (notification.priority) {
       case NotificationPriority.high:
         return AppColors.error;
-      case NotificationPriority.medium:
+      case NotificationPriority.normal:
         return AppColors.warning;
       case NotificationPriority.low:
         return AppColors.info;
+      case NotificationPriority.urgent:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
@@ -293,10 +296,13 @@ class NotificationItem extends StatelessWidget {
     switch (notification.priority) {
       case NotificationPriority.high:
         return Icons.priority_high;
-      case NotificationPriority.medium:
+      case NotificationPriority.normal:
         return Icons.warning_amber;
       case NotificationPriority.low:
         return Icons.info;
+      case NotificationPriority.urgent:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 
@@ -304,10 +310,13 @@ class NotificationItem extends StatelessWidget {
     switch (notification.priority) {
       case NotificationPriority.high:
         return 'ALTA';
-      case NotificationPriority.medium:
+      case NotificationPriority.normal:
         return 'MEDIA';
       case NotificationPriority.low:
         return 'BAJA';
+      case NotificationPriority.urgent:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 }
